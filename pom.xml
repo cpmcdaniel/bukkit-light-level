@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.kowboy.bukkit</groupId>
-    <artifactId>light-level</artifactId>
+    <artifactId>bukkit-light-level</artifactId>
     <version>1.0</version>
 
     <properties>
