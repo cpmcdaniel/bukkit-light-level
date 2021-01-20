@@ -26,8 +26,8 @@ You should see output similar to:
 
 ```
 [INFO] --- maven-install-plugin:2.4:install (default-install) @ light-level ---
-[INFO] Installing D:\Share\Craig\Projects\Minecraft\bukkit-light-level\target\light-level-1.0-SNAPSHOT.jar to C:\Users\cpmcd\.m2\repository\org\kowboy\bukkit\light-level\1.0-SNAPSHOT\light-level-1.0-SNAPSHOT.jar
-[INFO] Installing D:\Share\Craig\Projects\Minecraft\bukkit-light-level\pom.xml to C:\Users\cpmcd\.m2\repository\org\kowboy\bukkit\light-level\1.0-SNAPSHOT\light-level-1.0-SNAPSHOT.pom
+[INFO] Installing D:\...\bukkit-light-level\target\light-level-1.0-SNAPSHOT.jar to C:\...\.m2\repository\org\kowboy\bukkit\light-level\1.0-SNAPSHOT\light-level-1.0-SNAPSHOT.jar
+[INFO] Installing D:\...\bukkit-light-level\pom.xml to C:\...\.m2\repository\org\kowboy\bukkit\light-level\1.0-SNAPSHOT\light-level-1.0-SNAPSHOT.pom
 ```
 
 Copy the jar file to your server `plugins` directory and restart your server.
