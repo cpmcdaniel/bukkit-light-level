@@ -1,0 +1,3 @@
+# Setting these to 0 will disable the plugin
+sneak-radius: 8
+standing-radius: 6

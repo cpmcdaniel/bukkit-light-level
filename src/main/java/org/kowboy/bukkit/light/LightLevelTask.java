@@ -2,14 +2,20 @@ package org.kowboy.bukkit.light;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
- * Displays visual indicators of light-level in a apothem (square radius) around the player.
+ * Displays visual indicators of light-level in a radius (square radius) around the player.
  * Uses colored particle effects to indicate light level according to the following table.
  *
  * <table>
@@ -33,32 +39,52 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @since 1.0
  */
 public class LightLevelTask extends BukkitRunnable {
-    private final int apothem;
+    private final int sneakRadius;
+    private final int standingRadius;
     private final Player player;
-    private final Runnable onCancel;
 
-    public LightLevelTask(int apothem, Player player, Runnable onCancel) {
-        this.apothem = apothem;
+    private final Set<Material> lightSources = Stream.of(
+            Material.TORCH,
+            Material.LANTERN,
+            Material.GLOWSTONE,
+            Material.JACK_O_LANTERN,
+            Material.SEA_LANTERN,
+            Material.SEA_PICKLE,
+            Material.CONDUIT,
+            Material.CAMPFIRE,
+            Material.SOUL_CAMPFIRE,
+            Material.END_ROD,
+            Material.ENDER_CHEST,
+            Material.REDSTONE_TORCH,
+            Material.MAGMA_BLOCK,
+            Material.LAVA_BUCKET)
+            .collect(Collectors.toUnmodifiableSet());
+
+    public LightLevelTask(Player player, int sneakRadius, int standingRadius) {
+        this.sneakRadius = sneakRadius;
+        this.standingRadius = standingRadius;
         this.player = player;
-        this.onCancel = onCancel;
     }
 
     @Override
     public void run() {
+        if (!player.isOnline()) {
+            cancel();
+        }
+
         // Note, it would be more efficient to limit the blocks based on the yaw
         // (the direction the player is looking). Thus, we would not need to process
         // blocks that are behind the player or otherwise outside their field of view.
-        if (player.isOnline() && player.isSneaking()) {
-            for (int x = -apothem; x <= apothem; x++) {
-                for (int z = -apothem; z <= apothem; z++) {
+        if (isHoldingLight(player)) {
+            int radius = player.isSneaking() ? this.sneakRadius : this.standingRadius;
+            for (int x = -radius; x <= radius; x++) {
+                for (int z = -radius; z <= radius; z++) {
                     // Upper Y limit is 3, since you can't really see over that.
-                    for (int y = -apothem; y <= 3; y++) {
+                    for (int y = -radius; y <= 3; y++) {
                         process(x, y, z);
                     }
                 }
             }
-        } else {
-            cancel();
         }
     }
 
@@ -86,9 +112,14 @@ public class LightLevelTask extends BukkitRunnable {
         return Color.RED;
     }
 
-    @Override
-    public synchronized void cancel() throws IllegalStateException {
-        onCancel.run();
-        super.cancel();
+    private boolean isHoldingLight(Player player) {
+        ItemStack mainHandItem = player.getInventory().getItemInMainHand();
+        ItemStack offHandItem  = player.getInventory().getItemInOffHand();
+        return isLight(mainHandItem.getType()) || isLight(offHandItem.getType());
+    }
+
+    private boolean isLight(Material type) {
+        if (null == type) return false;
+        return lightSources.contains(type);
     }
 }
