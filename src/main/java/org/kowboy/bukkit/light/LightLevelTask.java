@@ -106,9 +106,7 @@ public class LightLevelTask extends BukkitRunnable {
     }
 
     private Color getColor(byte lightLevel) {
-        if (lightLevel >= 12) return Color.LIME;
-        if (lightLevel >= 10) return Color.GREEN;
-        if (lightLevel >= 8)  return Color.YELLOW;
+        if (lightLevel > 0) return Color.GREEN;
         return Color.RED;
     }
 
